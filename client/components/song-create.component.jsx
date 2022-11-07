@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { gql } from "@apollo/client";
 import { graphql } from "@apollo/client/react/hoc";
 import { Link, useHistory } from "react-router-dom";
 
 import fetchSongs from "../queries/fetchSongs";
+import createSong from "../queries/createSong";
 
 const SongCreate = ({ mutate }) => {
   const [title, setTitle] = useState("");
@@ -38,12 +38,4 @@ const SongCreate = ({ mutate }) => {
   );
 };
 
-const mutation = gql`
-  mutation AddSong($title: String) {
-    addSong(title: $title) {
-      title
-    }
-  }
-`;
-
-export default graphql(mutation)(SongCreate);
+export default graphql(createSong)(SongCreate);
