@@ -1,35 +1,47 @@
 import React from "react";
-import { gql } from "@apollo/client";
-// import { graphql } from "react-apollo";
+import { Link } from "react-router-dom";
 import { graphql } from "@apollo/client/react/hoc";
 
-const query = gql`
-  query {
-    songs {
-      id
-      title
-    }
-  }
-`;
+import fetchSongs from "../queries/fetchSongs";
+import deleteSong from "../queries/deleteSong";
 
-const SongList = ({ data }) => {
+const SongList = (props) => {
+  const onSongDeleteHandler = async (id) => {
+    try {
+      await props.mutate({ variables: { id } });
+      props.data.refetch();
+    } catch (error) {
+      console.log("An error occur during the cancellation of a song", error);
+    }
+  };
+
   const renderSongs = () => {
-    return data.songs.map((song) => (
-      <li key={song.id} className="collection-item">
-        {song.title}
+    return props.data.songs.map(({ id, title }) => (
+      <li key={id} className="collection-item">
+        {title}
+        <i
+          className="material-icons right delete-icon"
+          style={{ cursor: "pointer" }}
+          onClick={onSongDeleteHandler.bind(this, id)}
+        >
+          delete
+        </i>
       </li>
     ));
   };
 
-  if (data.loading) {
+  if (props.data.loading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="container">
+    <>
       <ul className="collection">{renderSongs()}</ul>
-    </div>
+      <Link to="/songs/new" className="btn-floating btn-large red right">
+        <i className="material-icons">add</i>
+      </Link>
+    </>
   );
 };
 
-export default graphql(query)(SongList);
+export default graphql(deleteSong)(graphql(fetchSongs)(SongList));
