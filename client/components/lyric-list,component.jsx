@@ -4,10 +4,14 @@ import { graphql } from "@apollo/client/react/hoc";
 import likeLyric from "../queries/likeLyric";
 
 const LyricList = ({ lyrics, mutate }) => {
-  const onLikeClickHandler = (id) => {
-    console.log(id);
-
-    mutate({ variables: { id } });
+  const onLikeClickHandler = (id, likes) => {
+    mutate({
+      variables: { id },
+      optimisticResponse: {
+        __typename: "Mutation",
+        likeLyric: { id, __typename: "LyricType", likes: likes + 1 },
+      },
+    });
   };
 
   const renderLyrics = lyrics
@@ -18,7 +22,7 @@ const LyricList = ({ lyrics, mutate }) => {
           <i
             className="material-icons right"
             style={{ cursor: "pointer" }}
-            onClick={onLikeClickHandler.bind(this, id)}
+            onClick={onLikeClickHandler.bind(this, id, likes)}
           >
             thumb_up
           </i>
