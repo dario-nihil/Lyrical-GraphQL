@@ -1,12 +1,11 @@
 const webpack = require("webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const path = require("path");
 
 module.exports = {
   mode: "development",
-  entry: path.resolve(__dirname, "./client/index.js"),
+  entry: "./client/index.js",
   output: {
-    path: path.resolve(__dirname, "/"),
+    path: "/",
     filename: "bundle.js",
   },
   resolve: {
@@ -15,15 +14,16 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
         use: {
           loader: "babel-loader",
         },
+        test: /\.(js|jsx)$/,
+        enforce: "pre",
+        exclude: /node_modules/,
       },
       {
-        test: /\.css$/,
         use: ["style-loader", "css-loader"],
+        test: /\.css$/,
       },
     ],
   },
